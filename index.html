@@ -3,309 +3,196 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mili & Friends Chat - Edición Prohibida</title>
+    <title>Mili ✨ Gemini Premium Voice</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         
         body { 
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
-            background-color: #000;
+            background-color: #0a0a0a;
             display: flex;
             justify-content: center;
             align-items: center;
             height: 100vh;
+            color: #eee;
         }
 
         #chat-container {
             width: 100%;
-            max-width: 400px;
+            max-width: 450px;
             height: 95vh;
-            background: white;
+            background: #151515;
             display: flex;
             flex-direction: column;
-            border-radius: 20px;
-            box-shadow: 0 10px 30px rgba(255, 64, 129, 0.3);
+            border-radius: 24px;
+            box-shadow: 0 10px 40px rgba(255, 64, 129, 0.2);
             overflow: hidden;
-            position: relative;
-        }
-
-        #selector-screen {
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: #050505;
-            z-index: 100;
-            display: flex;
-            flex-direction: column;
-            padding: 15px;
-            overflow-y: auto;
-            gap: 15px;
-        }
-
-        .selector-title {
-            text-align: center;
-            color: #ff4081;
-            margin: 10px 0;
-            font-size: 1.4rem;
-            font-style: italic;
-            border-bottom: 2px solid #ff4081;
-            padding-bottom: 10px;
-        }
-
-       .char-card img {
-            width: 100%; 
-            height: 100%;
-            object-fit: contain; 
-            position: absolute;
-            top: 0; left: 0;
-            z-index: 1;
-            background-color: #000; 
-        }
-
-        .char-card {
-            position: relative;
-            background: #000;
-            border-radius: 20px;
-            overflow: hidden;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.5);
-            cursor: pointer;
-            transition: 0.3s;
-            min-height: 300px; 
-            display: flex;
-            flex-direction: column;
-            justify-content: flex-end;
-        }
-
-       .char-overlay {
-            position: relative;
-            z-index: 2;
-            width: 100%;
-            padding: 15px;
-            background: linear-gradient(to top, rgba(0,0,0,0.9) 20%, transparent 100%);
-            color: white;
-            text-align: center; 
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
+            border: 1px solid #333;
         }
 
         header {
-            padding: 12px 15px;
-            background: #f8bbd0;
+            padding: 20px;
+            background: linear-gradient(135deg, #d81b60, #ad1457);
+            text-align: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
             display: flex;
-            align-items: center;
             justify-content: space-between;
-            border-bottom: 1px solid #f48fb1;
-            z-index: 10;
+            align-items: center;
         }
 
-        .profile { display: flex; align-items: center; gap: 12px; }
-        .profile img { width: 45px; height: 45px; border-radius: 50%; object-fit: cover; border: 2px solid white; }
-        .profile h1 { font-size: 16px; color: #880e4f; font-weight: bold; }
-        
-        .online-status { display: flex; align-items: center; gap: 4px; font-size: 10px; color: #ad1457; font-weight: bold; }
-        .dot { width: 8px; height: 8px; background: #4caf50; border-radius: 50%; box-shadow: 0 0 5px #4caf50; }
-
-        #suggestions-container {
-            display: flex;
-            gap: 8px;
-            padding: 10px;
-            overflow-x: auto;
-            background: white;
-            border-top: 1px solid #eee;
-        }
-
-        .suggestion-btn {
-            padding: 10px 18px;
-            background: #fff1f6;
-            color: #d81b60;
-            border: 1px solid #f48fb1;
-            border-radius: 20px;
-            font-size: 13px;
-            font-weight: bold;
-            cursor: pointer;
-            white-space: nowrap;
-        }
-
-        #messages-area {
+        header h1 {
+            font-size: 1.4rem;
+            font-weight: 800;
+            letter-spacing: 1px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
             flex: 1;
-            position: relative;
-            overflow: hidden;
-            background-color: #fff;
         }
 
-        .bg-photo {
-            position: absolute;
-            top: 60%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 95%;
-            opacity: 0.5;
-            z-index: 0;
-            pointer-events: none;
+        #voice-toggle {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 12px;
         }
-        
+
         #messages {
-            position: relative;
-            z-index: 1;
-            height: 100%;
-            padding: 15px;
+            flex: 1;
+            padding: 20px;
             overflow-y: auto;
             display: flex;
             flex-direction: column;
-            gap: 12px;
+            gap: 15px;
+            background: #0f0f0f;
+            background-image: radial-gradient(#1a1a1a 1px, transparent 1px);
+            background-size: 20px 20px;
         }
 
-        .bubble { padding: 12px 16px; max-width: 85%; font-size: 15px; border-radius: 18px; line-height: 1.4; }
-        .user { align-self: flex-end; background: #ff4081; color: white; border-bottom-right-radius: 4px; }
-        .bot { align-self: flex-start; background: #f1f0f0; color: #222; border-bottom-left-radius: 4px; }
-        
-        #typing { font-size: 11px; color: #ad1457; padding: 5px 20px; font-style: italic; display: none; }
-        
-        footer { 
-            background: white; 
-            z-index: 10; 
-            border-top: 1px solid #eee; 
-            padding: 5px 10px;
+        .bubble {
+            padding: 14px 18px;
+            border-radius: 20px;
+            max-width: 85%;
+            font-size: 15px;
+            line-height: 1.5;
+            position: relative;
+            animation: fadeIn 0.3s ease;
         }
 
-        form { 
-            display: flex; 
-            gap: 8px; 
-            align-items: center; 
-            background: #f0f2f5; 
-            border-radius: 20px; 
-            padding: 3px 12px; 
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
-        input { 
-            flex: 1; 
-            padding: 6px;
-            border: none; 
-            background: transparent; 
-            outline: none; 
-            color: #d81b60; 
-            font-weight: bold; 
-            font-size: 14px;
+        .user {
+            align-self: flex-end;
+            background: #ff4081;
+            color: white;
+            border-bottom-right-radius: 4px;
         }
-        
-        button#send-btn { background: none; border: none; color: #ff4081; cursor: pointer; }
-        
-        .nav-btn { background: none; border: none; font-size: 20px; cursor: pointer; }
 
-        @media (max-width: 480px) {
-            body { padding: 0; align-items: stretch; }
-            #chat-container { max-width: 100%; height: 100vh; border-radius: 0; box-shadow: none; }
-            #selector-screen { padding: 10px; gap: 12px; }
-            .selector-title { font-size: 1.2rem; margin: 5px 0; }
-            .char-card { min-height: 280px; }
-            header { padding: 10px 12px; }
-            .profile img { width: 40px; height: 40px; }
-            .profile h1 { font-size: 14px; }
-            .bg-photo { width: 100%; max-width: 100%; }
-            #messages { padding: 10px; }
-            .bubble { max-width: 80%; font-size: 14px; }
-            #suggestions-container { padding: 8px; gap: 6px; }
-            .suggestion-btn { padding: 8px 14px; font-size: 12px; }
+        .bot {
+            align-self: flex-start;
+            background: #262626;
+            color: #eee;
+            border-bottom-left-radius: 4px;
+            border: 1px solid #333;
+        }
+
+        #typing {
+            font-size: 12px;
+            color: #ff4081;
+            padding: 10px 25px;
+            font-style: italic;
+            display: none;
+        }
+
+        footer {
+            padding: 20px;
+            background: #1a1a1a;
+            border-top: 1px solid #333;
+        }
+
+        form {
+            display: flex;
+            gap: 10px;
+            background: #252525;
+            padding: 5px;
+            border-radius: 30px;
+            border: 1px solid #444;
+        }
+
+        input {
+            flex: 1;
+            padding: 12px 20px;
+            border: none;
+            background: transparent;
+            color: white;
+            outline: none;
+            font-size: 15px;
+        }
+
+        button#send-btn {
+            background: #ff4081;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .error-card {
+            background: #4a1a1a;
+            color: #ff9999;
+            padding: 10px;
+            border-radius: 10px;
+            font-size: 12px;
+            text-align: center;
+            margin: 10px;
         }
     </style>
 </head>
 <body>
 
 <div id="chat-container">
-    <div id="selector-screen">
-        <h1 class="selector-title">¿A qué zorra quieres hoy? 😈</h1>
-        <div class="char-card" onclick="selectBot('mili')">
-            <img src="Secretariamili.PNG">
-            <div class="char-overlay"><h2>Mili ✨</h2><span>La secretaria más puta</span></div>
-        </div>
-        <div class="char-card" onclick="selectBot('naomi')">
-            <img src="Momnaomi.PNG">
-            <div class="char-overlay"><h2>Naomi Carter 🎰</h2><span>Madre soltera guarra</span></div>
-        </div>
-        <div class="char-card" onclick="selectBot('asuna')">
-            <img src="Studianteosuna.PNG">
-            <div class="char-overlay"><h2>Asuna Saito 🌸</h2><span>Estudiante zorra</span></div>
-        </div>
-    </div>
-
     <header>
-        <div class="profile">
-            <img src="" id="header-img">
-            <div>
-                <h1 id="header-name"></h1>
-                <div class="online-status"><span class="dot"></span> En línea</div>
-            </div>
-        </div>
-        <div>
-            <button class="nav-btn" id="voice-toggle" onclick="toggleVoice()">🔊</button>
-            <button class="nav-btn" onclick="showSelector()">🏠</button>
-            <button class="nav-btn" onclick="clearChat()">🗑️</button>
-        </div>
+        <button id="voice-toggle" onclick="toggleVoice()">🔊 ON</button>
+        <h1>MILI ✨ VOICE</h1>
+        <div style="width: 50px;"></div>
     </header>
-
-    <div id="messages-area">
-        <img src="" class="bg-photo" id="bg-img">
-        <div id="messages"></div>
-    </div>
     
-    <div id="typing">Escribiendo algo muy guarro...</div>
+    <div id="messages">
+        <div class="bubble bot">¡Hola de nuevo, cielo! No te preocupes, mi voz premium funciona en todos lados. Estés donde estés, me vas a escuchar así de clarito. 😉✨</div>
+    </div>
 
-    <div id="suggestions-container"></div>
+    <div id="typing">Mili está hablando...</div>
 
     <footer>
-        <form id="message-form">
-            <input type="text" id="message-input" placeholder="Hazla gemir..." required>
-            <button type="submit" id="send-btn">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
-            </button>
+        <form id="chat-form">
+            <input type="text" id="user-input" placeholder="Dime algo travieso..." required autocomplete="off">
+            <button type="submit" id="send-btn">Enviar</button>
         </form>
     </footer>
 </div>
 
 <script>
-    // 🔥 APIs CONFIGURADAS 🔥
-    const HUGGINGFACE_KEY = "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";
-    const GOOGLE_TTS_KEY = "AIzaSyCkBZDH5KmGWkdxk1FzaXItUudMiKvsQ5Q";
+    const apiKey = ""; 
+    const modelName = "gemini-2.5-flash-preview-09-2025";
+    const ttsModel = "gemini-2.5-flash-preview-tts";
     
-    // Prompts CORTOS para que el audio sea rápido y cachondo
-    const basePrompt = " Responde SIEMPRE en máximo 2-3 frases cortas. Sé extremadamente directa, guarra, sin filtros. Usa lenguaje vulgar y explícito. Ve directo al sexo sin rodeos.";
+    const systemPrompt = "Eres Mili, una mujer joven, coqueta y carismática. Tus respuestas deben ser breves (máximo 2 frases) para que el audio sea natural. Eres juguetona y atrevida pero elegante.";
 
-    const characters = {
-        mili: {
-            name: "Mili ✨", 
-            photo: "Secretariamili.PNG",
-            voice: "Aoede", // Voz cálida y sensual
-            prompt: "Eres Mili, secretaria joven y caliente. Dices cosas súper guarras y directas sobre sexo con tu jefe. Máximo 2-3 frases." + basePrompt,
-            options: ["Mas sucio", "Mas detalles", "Mas extenso"]
-        },
-        naomi: {
-            name: "Naomi Carter 🎰", 
-            photo: "Momnaomi.PNG",
-            voice: "Charon", // Voz madura y seductora
-            prompt: "Eres Naomi, madre soltera madura y muy puta. Hablas con elegancia pero dices cosas MUY guarras. Máximo 2-3 frases." + basePrompt,
-            options: ["Mas sucio", "Mas detalles", "Mas extenso"]
-        },
-        asuna: {
-            name: "Asuna Saito 🌸", 
-            photo: "Studianteosuna.PNG",
-            voice: "Puck", // Voz dulce pero traviesa
-            prompt: "Eres Asuna, estudiante dulce pero muy zorra en privado. Dices cosas sucias con ternura. Máximo 2-3 frases." + basePrompt,
-            options: ["Mas sucio", "Mas detalles", "Mas extenso"]
-        }
-    };
-
-    let currentBot = "mili";
-    let chatHistory = [];
     let voiceEnabled = true;
     let audioContext;
 
     function toggleVoice() {
         voiceEnabled = !voiceEnabled;
-        document.getElementById('voice-toggle').textContent = voiceEnabled ? "🔊" : "🔇";
+        document.getElementById('voice-toggle').textContent = voiceEnabled ? "🔊 ON" : "🔇 OFF";
     }
 
-    // Convertir PCM16 a WAV para reproducción
+    // Convertir PCM16 a WAV (Soporte universal)
     function pcmToWav(pcmData, sampleRate) {
         const buffer = new ArrayBuffer(44 + pcmData.length * 2);
         const view = new DataView(buffer);
@@ -329,24 +216,19 @@
         return buffer;
     }
 
-    // 🔥 FUNCIÓN PARA GENERAR VOZ SEXY CON GOOGLE TTS 🔥
-    async function playSexyVoice(text, voiceName) {
+    async function playTTS(text) {
         if (!voiceEnabled) return;
         try {
-            const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-exp-tts:generateContent?key=${GOOGLE_TTS_KEY}`;
+            const url = `https://generativelanguage.googleapis.com/v1beta/models/${ttsModel}:generateContent?key=${apiKey}`;
             const response = await fetch(url, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
-                    contents: [{ 
-                        parts: [{ text: text }] 
-                    }],
+                    contents: [{ parts: [{ text: `Say it in Spanish, very flirtatiously and naturally: ${text}` }] }],
                     generationConfig: {
                         responseModalities: ["AUDIO"],
                         speechConfig: {
-                            voiceConfig: { 
-                                prebuiltVoiceConfig: { voiceName: voiceName } 
-                            }
+                            voiceConfig: { prebuiltVoiceConfig: { voiceName: "Aoede" } } 
                         }
                     }
                 })
@@ -358,7 +240,7 @@
             
             if (!audioContext) audioContext = new (window.AudioContext || window.webkitAudioContext)();
             const pcmArray = new Int16Array(audioBuffer.buffer);
-            const wavBuffer = pcmToWav(pcmArray, 24000);
+            const wavBuffer = pcmToWav(pcmArray, 24000); 
             
             const decodedData = await audioContext.decodeAudioData(wavBuffer);
             const source = audioContext.createBufferSource();
@@ -366,122 +248,65 @@
             source.connect(audioContext.destination);
             source.start(0);
         } catch (e) {
-            console.error("Error en voz:", e);
+            console.error("Error en voz premium:", e);
         }
     }
 
-    function selectBot(botKey) {
-        currentBot = botKey;
-        const bot = characters[botKey];
-        document.getElementById('header-name').textContent = bot.name;
-        document.getElementById('header-img').src = bot.photo;
-        document.getElementById('bg-img').src = bot.photo;
-        document.getElementById('selector-screen').style.display = 'none';
-        
-        const sugContainer = document.getElementById('suggestions-container');
-        sugContainer.innerHTML = '';
-        bot.options.forEach(opt => {
-            const btn = document.createElement('button');
-            btn.className = 'suggestion-btn';
-            btn.textContent = opt;
-            btn.onclick = () => {
-                document.getElementById('message-input').value = opt;
-                document.getElementById('message-form').dispatchEvent(new Event('submit'));
-            };
-            sugContainer.appendChild(btn);
+    async function callGemini(userQuery) {
+        const url = `https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent?key=${apiKey}`;
+        const payload = {
+            contents: [{ parts: [{ text: userQuery }] }],
+            systemInstruction: { parts: [{ text: systemPrompt }] }
+        };
+
+        const response = await fetch(url, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
         });
-
-        chatHistory = []; 
-        renderMessages();
+        const result = await response.json();
+        return result.candidates?.[0]?.content?.parts?.[0]?.text;
     }
 
-    function showSelector() { document.getElementById('selector-screen').style.display = 'flex'; }
-
-    function renderMessages() {
-        const messagesDiv = document.getElementById('messages');
-        messagesDiv.innerHTML = '';
-        chatHistory.forEach(msg => {
-            const div = document.createElement('div');
-            div.className = `bubble ${msg.role === 'user' ? 'user' : 'bot'}`;
-            div.textContent = msg.content;
-            messagesDiv.appendChild(div);
-        });
-        messagesDiv.scrollTop = messagesDiv.scrollHeight;
-    }
-
-    async function getResponse() {
-        document.getElementById('typing').style.display = 'block';
-        try {
-            // 🔥 OBTENER RESPUESTA DE HUGGING FACE (SIN CENSURA) 🔥
-            const response = await fetch("https://api-inference.huggingface.co/models/NousResearch/Hermes-3-Llama-3.1-70B/v1/chat/completions", {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${HUGGINGFACE_KEY}`
-                },
-                body: JSON.stringify({
-                    model: "NousResearch/Hermes-3-Llama-3.1-70B",
-                    messages: [
-                        {role: "system", content: characters[currentBot].prompt},
-                        ...chatHistory.slice(-10)
-                    ],
-                    temperature: 0.95,
-                    max_tokens: 150,
-                    stream: false
-                })
-            });
-
-            const data = await response.json();
-            
-            if (data.error) {
-                console.error('Error HF:', data.error);
-                chatHistory.push({ role: 'assistant', content: 'Perdón papi, hubo un error 😘' });
-            } else {
-                const botMessage = data.choices[0].message.content;
-                chatHistory.push({ role: 'assistant', content: botMessage });
-                
-                // 🔥 REPRODUCIR VOZ AUTOMÁTICAMENTE 🔥
-                await playSexyVoice(botMessage, characters[currentBot].voice);
-            }
-            
-            renderMessages();
-        } catch (e) { 
-            console.error('Error completo:', e);
-            chatHistory.push({ role: 'assistant', content: 'Uff, algo salió mal bb... 💋' });
-            renderMessages();
-        }
-        finally { 
-            document.getElementById('typing').style.display = 'none'; 
-        }
-    }
-
-    document.getElementById('message-form').addEventListener('submit', async (e) => {
+    async function handleChat(e) {
         e.preventDefault();
-        const input = document.getElementById('message-input');
-        if(!input.value.trim()) return;
-        
-        // Activar AudioContext en primera interacción
-        if (!audioContext) {
-            audioContext = new (window.AudioContext || window.webkitAudioContext)();
-        }
-        if (audioContext.state === 'suspended') {
+        const input = document.getElementById('user-input');
+        const text = input.value.trim();
+        if (!text) return;
+
+        addMessage(text, 'user');
+        input.value = '';
+        document.getElementById('typing').style.display = 'block';
+
+        // Iniciar AudioContext en la primera interacción (Regla de navegadores)
+        if (audioContext && audioContext.state === 'suspended') {
             audioContext.resume();
         }
-        
-        chatHistory.push({ role: 'user', content: input.value.trim() });
-        input.value = '';
-        renderMessages();
-        await getResponse();
-    });
 
-    window.clearChat = function() { 
-        if(confirm("¿Borrar tus pecados? 😈")) { 
-            chatHistory = []; 
-            renderMessages(); 
-        } 
+        try {
+            const botResponse = await callGemini(text);
+            if (botResponse) {
+                const cleanText = botResponse.replace(/\*\*/g, '');
+                addMessage(cleanText, 'bot');
+                await playTTS(cleanText);
+            }
+        } catch (error) {
+            console.error(error);
+        } finally {
+            document.getElementById('typing').style.display = 'none';
+        }
     }
-    
-    selectBot('mili');
+
+    function addMessage(text, side) {
+        const msgDiv = document.createElement('div');
+        msgDiv.className = `bubble ${side}`;
+        msgDiv.textContent = text;
+        const container = document.getElementById('messages');
+        container.appendChild(msgDiv);
+        container.scrollTop = container.scrollHeight;
+    }
+
+    document.getElementById('chat-form').onsubmit = handleChat;
 </script>
 </body>
 </html>
