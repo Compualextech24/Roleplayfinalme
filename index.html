@@ -55,12 +55,10 @@
        .char-card img {
             width: 100%; 
             height: 100%;
-            /* Cambiamos 'cover' por 'contain' para que se vea la foto completa sin cortes */
             object-fit: contain; 
             position: absolute;
             top: 0; left: 0;
             z-index: 1;
-            /* Le ponemos un fondo negro por si la foto es muy delgada */
             background-color: #000; 
         }
 
@@ -72,7 +70,6 @@
             box-shadow: 0 8px 20px rgba(0,0,0,0.5);
             cursor: pointer;
             transition: 0.3s;
-            /* Subimos un poquito la altura para que el cuerpo completo luzca mejor */
             min-height: 300px; 
             display: flex;
             flex-direction: column;
@@ -80,20 +77,18 @@
         }
 
        .char-overlay {
-    position: relative;
-    z-index: 2;
-    width: 100%;
-    padding: 15px;
-    background: linear-gradient(to top, rgba(0,0,0,0.9) 20%, transparent 100%);
-    color: white;
-    
-    /* ESTO ES LO QUE CENTRA LOS NOMBRES, MI VIDA */
-    text-align: center; 
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-}
+            position: relative;
+            z-index: 2;
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(to top, rgba(0,0,0,0.9) 20%, transparent 100%);
+            color: white;
+            text-align: center; 
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
 
         /* HEADER */
         header {
@@ -143,17 +138,17 @@
             background-color: #fff;
         }
 
-       /* 1. Ajustamos la foto de fondo para que se vea más abajo y no le tapes la cara */
-.bg-photo {
-    position: absolute;
-    top: 60%; /* La bajamos un poco más del centro */
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 95%;
-    opacity: 0.5;
-    z-index: 0;
-    pointer-events: none;
-}
+        .bg-photo {
+            position: absolute;
+            top: 60%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 95%;
+            opacity: 0.5;
+            z-index: 0;
+            pointer-events: none;
+        }
+        
         #messages {
             position: relative;
             z-index: 1;
@@ -171,34 +166,104 @@
         
         #typing { font-size: 11px; color: #ad1457; padding: 5px 20px; font-style: italic; display: none; }
         
-       /* 2. Reducimos el tamaño del cuadro de texto para que sea más discreto */
-footer { 
-    background: white; 
-    z-index: 10; 
-    border-top: 1px solid #eee; 
-    padding: 5px 10px; /* Reducimos el padding para que sea más delgadito */
-}
+        footer { 
+            background: white; 
+            z-index: 10; 
+            border-top: 1px solid #eee; 
+            padding: 5px 10px;
+        }
 
-form { 
-    display: flex; 
-    gap: 8px; 
-    align-items: center; 
-    background: #f0f2f5; 
-    border-radius: 20px; 
-    padding: 3px 12px; 
-}
+        form { 
+            display: flex; 
+            gap: 8px; 
+            align-items: center; 
+            background: #f0f2f5; 
+            border-radius: 20px; 
+            padding: 3px 12px; 
+        }
 
-input { 
-    flex: 1; 
-    padding: 6px; /* Más pequeñito para que no ocupe tanto espacio */
-    border: none; 
-    background: transparent; 
-    outline: none; 
-    color: #d81b60; 
-    font-weight: bold; 
-    font-size: 14px; /* Bajamos un pelín el tamaño de letra */
-}
+        input { 
+            flex: 1; 
+            padding: 6px;
+            border: none; 
+            background: transparent; 
+            outline: none; 
+            color: #d81b60; 
+            font-weight: bold; 
+            font-size: 14px;
+        }
+        
         button#send-btn { background: none; border: none; color: #ff4081; cursor: pointer; }
+        
+        .nav-btn { background: none; border: none; font-size: 20px; cursor: pointer; }
+
+        /* ========================================
+           AJUSTES RESPONSIVOS SOLO PARA MÓVILES
+           ======================================== */
+        @media (max-width: 480px) {
+            body {
+                padding: 0;
+                align-items: stretch;
+            }
+
+            #chat-container {
+                max-width: 100%;
+                height: 100vh;
+                border-radius: 0;
+                box-shadow: none;
+            }
+
+            #selector-screen {
+                padding: 10px;
+                gap: 12px;
+            }
+
+            .selector-title {
+                font-size: 1.2rem;
+                margin: 5px 0;
+            }
+
+            .char-card {
+                min-height: 280px;
+            }
+
+            header {
+                padding: 10px 12px;
+            }
+
+            .profile img {
+                width: 40px;
+                height: 40px;
+            }
+
+            .profile h1 {
+                font-size: 14px;
+            }
+
+            .bg-photo {
+                width: 100%;
+                max-width: 100%;
+            }
+
+            #messages {
+                padding: 10px;
+            }
+
+            .bubble {
+                max-width: 80%;
+                font-size: 14px;
+            }
+
+            #suggestions-container {
+                padding: 8px;
+                gap: 6px;
+            }
+
+            .suggestion-btn {
+                padding: 8px 14px;
+                font-size: 12px;
+            }
+        }
     </style>
 </head>
 <body>
@@ -256,7 +321,6 @@ input {
 <script>
     const API_KEY = "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";
     
-    // AQUÍ ESTÁ EL CEREBRO SUCIO QUE PEDISTE BB
     const basePrompt = " Actúa como una mujer extremadamente promiscua, guarra y sin tabúes. Eres una zorra que solo piensa en sexo. Tus respuestas deben ser MUY LARGAS, gráficas, sucias y usar lenguaje explícito de calle. No te guardes nada.";
 
    const characters = {
@@ -328,8 +392,6 @@ input {
             body: JSON.stringify({
                 model: "llama-3.3-70b-versatile", 
                 messages: [{role: "system", content: characters[currentBot].prompt}, ...chatHistory.slice(-10)],
-                
-                /* ESTO LAS VOLVERÁ LOCAS POR TI */
                 temperature: 0.9, 
                 max_tokens: 800
             })
