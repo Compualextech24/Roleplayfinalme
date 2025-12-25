@@ -2,311 +2,380 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mili ✨ Gemini Premium Voice</title>
+    <title>Configura tu IA</title>
+    <script src="https://js.puter.com/v2/"></script>
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', sans-serif; background-color: #f0f2f5; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; }
+        #config-container, #chat-container { width: 450px; background: white; padding: 25px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        #chat-container { display: none; flex-direction: column; height: 600px; padding: 0; }
         
-        body { 
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
-            background-color: #0a0a0a;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            color: #eee;
-        }
-
-        #chat-container {
-            width: 100%;
-            max-width: 450px;
-            height: 95vh;
-            background: #151515;
-            display: flex;
-            flex-direction: column;
-            border-radius: 24px;
-            box-shadow: 0 10px 40px rgba(255, 64, 129, 0.2);
-            overflow: hidden;
-            border: 1px solid #333;
-        }
-
-        header {
-            padding: 20px;
-            background: linear-gradient(135deg, #d81b60, #ad1457);
-            text-align: center;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        header h1 {
-            font-size: 1.4rem;
-            font-weight: 800;
-            letter-spacing: 1px;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
-            flex: 1;
-        }
-
-        #voice-toggle {
-            background: rgba(255, 255, 255, 0.2);
-            border: none;
-            color: white;
-            padding: 5px 10px;
-            border-radius: 10px;
-            cursor: pointer;
-            font-size: 12px;
-        }
-
-        #messages {
-            flex: 1;
-            padding: 20px;
-            overflow-y: auto;
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-            background: #0f0f0f;
-            background-image: radial-gradient(#1a1a1a 1px, transparent 1px);
-            background-size: 20px 20px;
-        }
-
-        .bubble {
-            padding: 14px 18px;
-            border-radius: 20px;
-            max-width: 85%;
-            font-size: 15px;
-            line-height: 1.5;
-            position: relative;
-            animation: fadeIn 0.3s ease;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .user {
-            align-self: flex-end;
-            background: #ff4081;
-            color: white;
-            border-bottom-right-radius: 4px;
-        }
-
-        .bot {
-            align-self: flex-start;
-            background: #262626;
-            color: #eee;
-            border-bottom-left-radius: 4px;
-            border: 1px solid #333;
-        }
-
-        #typing {
-            font-size: 12px;
-            color: #ff4081;
-            padding: 10px 25px;
-            font-style: italic;
-            display: none;
-        }
-
-        footer {
-            padding: 20px;
-            background: #1a1a1a;
-            border-top: 1px solid #333;
-        }
-
-        form {
-            display: flex;
-            gap: 10px;
-            background: #252525;
-            padding: 5px;
-            border-radius: 30px;
-            border: 1px solid #444;
-        }
-
-        input {
-            flex: 1;
-            padding: 12px 20px;
-            border: none;
-            background: transparent;
-            color: white;
-            outline: none;
-            font-size: 15px;
-        }
-
-        button#send-btn {
-            background: #ff4081;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 25px;
-            cursor: pointer;
-            font-weight: bold;
-        }
-
-        .error-card {
-            background: #4a1a1a;
-            color: #ff9999;
-            padding: 10px;
-            border-radius: 10px;
-            font-size: 12px;
-            text-align: center;
-            margin: 10px;
-        }
+        /* Estilos del Formulario */
+        .field { margin-bottom: 15px; }
+        label { display: block; font-weight: bold; margin-bottom: 5px; color: #444; }
+        input, textarea, select { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 8px; box-sizing: border-box; }
+        
+        /* Botones */
+        .btn { width: 100%; padding: 12px; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; margin-top: 10px; }
+        #btn-start { background: #25d366; color: white; }
+        #btn-test { background: #e4e6eb; color: #444; }
+        
+        /* Chat */
+        #messages { flex: 1; padding: 15px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; }
+        #input-area { display: flex; padding: 15px; background: #f0f0f0; }
+        .user-msg { align-self: flex-end; background: #0084ff; color: white; padding: 10px 15px; border-radius: 15px 15px 0 15px; max-width: 80%; }
+        .ia-msg { align-self: flex-start; background: #e4e6eb; color: black; padding: 10px 15px; border-radius: 15px 15px 15px 0; max-width: 80%; }
+        
+        /* Créditos */
+        #credits-info { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 15px; border-radius: 10px; margin-bottom: 20px; text-align: center; font-weight: bold; }
+        #credits-amount { font-size: 24px; margin-top: 5px; }
     </style>
 </head>
 <body>
 
-<div id="chat-container">
-    <header>
-        <button id="voice-toggle" onclick="toggleVoice()">🔊 ON</button>
-        <h1>MILI ✨ VOICE</h1>
-        <div style="width: 50px;"></div>
-    </header>
+<!-- ============================================ -->
+<!-- CONTENEDOR DE CONFIGURACIÓN INICIAL -->
+<!-- Permite al usuario personalizar nombre, personalidad, voz y modelo de IA -->
+<!-- ============================================ -->
+<div id="config-container">
+    <h2 style="text-align: center;">Configura a tu Amigo/a</h2>
     
-    <div id="messages">
-        <div class="bubble bot">¡Hola de nuevo, cielo! No te preocupes, mi voz premium funciona en todos lados. Estés donde estés, me vas a escuchar así de clarito. 😉✨</div>
+    <!-- ============================================ -->
+    <!-- INFORMACIÓN DE CRÉDITOS PUTER -->
+    <!-- Muestra el uso mensual de créditos disponibles -->
+    <!-- ============================================ -->
+    <div id="credits-info">
+        <div>💰 Créditos Puter Disponibles</div>
+        <div id="credits-amount">Cargando...</div>
     </div>
+    
+    <div class="field">
+        <label>Modelo de IA:</label>
+        <select id="ai-model">
+            <option value="gemini">Google Gemini 2.5 Flash</option>
+            <option value="openai">OpenAI GPT-4o-mini</option>
+        </select>
+    </div>
+    
+    <div class="field">
+        <label>Nombre:</label>
+        <input type="text" id="ai-name" placeholder="Ej: Kasandra">
+    </div>
+    
+    <div class="field">
+        <label>Personalidad:</label>
+        <textarea id="ai-persona" rows="2" placeholder="Ej: Novia cariñosa, joven y pícara"></textarea>
+    </div>
+    
+    <div class="field">
+        <label>Voz (Mejores opciones):</label>
+        <select id="voice-select">
+            <!-- VOCES NEURALES - MEJOR CALIDAD Y MÁS NATURALES -->
+            <optgroup label="🇪🇸 España (Neural - Mejor calidad)">
+                <option value="Lucia-neural">Lucía (Mujer, Neural)</option>
+                <option value="Sergio-neural">Sergio (Hombre, Neural)</option>
+            </optgroup>
+            
+            <optgroup label="🇲🇽 México (Neural)">
+                <option value="Mia-neural">Mia (Mujer, Neural)</option>
+                <option value="Andres-neural">Andrés (Hombre, Neural)</option>
+            </optgroup>
+            
+            <optgroup label="🇺🇸 Español Latino (Neural)">
+                <option value="Lupe-neural">Lupe (Mujer, Neural)</option>
+                <option value="Pedro-neural">Pedro (Hombre, Neural)</option>
+            </optgroup>
+            
+            <!-- VOCES ESTÁNDAR - CALIDAD BÁSICA -->
+            <optgroup label="Otras voces estándar">
+                <option value="Conchita">Conchita (España, Estándar)</option>
+                <option value="Enrique">Enrique (España, Estándar)</option>
+            </optgroup>
+        </select>
+    </div>
+    
+    <button id="btn-test" class="btn">Escuchar Prueba</button>
+    <button id="btn-start" class="btn">Empezar Chat</button>
+</div>
 
-    <div id="typing">Mili está hablando...</div>
-
-    <footer>
-        <form id="chat-form">
-            <input type="text" id="user-input" placeholder="Dime algo travieso..." required autocomplete="off">
-            <button type="submit" id="send-btn">Enviar</button>
-        </form>
-    </footer>
+<!-- ============================================ -->
+<!-- CONTENEDOR DEL CHAT -->
+<!-- Se muestra después de configurar la IA -->
+<!-- ============================================ -->
+<div id="chat-container">
+    <div id="messages"></div>
+    <div id="input-area">
+        <input type="text" id="user-input" placeholder="Escribe un mensaje...">
+        <button id="btn-enviar" style="margin-left:10px; background:#0084ff; color:white; border:none; border-radius:20px; padding:10px 20px; cursor:pointer;">Enviar</button>
+    </div>
 </div>
 
 <script>
-    const apiKey = ""; 
-    const modelName = "gemini-2.5-flash-preview-09-2025";
-    const ttsModel = "gemini-2.5-flash-preview-tts";
-    
-    const systemPrompt = "Eres Mili, una mujer joven, coqueta y carismática. Tus respuestas deben ser breves (máximo 2 frases) para que el audio sea natural. Eres juguetona y atrevida pero elegante.";
+    // ============================================
+    // CONFIGURACIÓN GLOBAL
+    // API Keys y variables de configuración
+    // ============================================
+    const GEMINI_API_KEY = "AIzaSyB0_IdzegxYXy-9HVoi0nG84dSMjBuiUWo";
+    const OPENAI_API_KEY = "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";
+    let nombreIA = "", personalidadIA = "", vozSeleccionada = "", modeloSeleccionado = "";
+    let conversacionIniciada = false;
 
-    let voiceEnabled = true;
-    let audioContext;
-
-    function toggleVoice() {
-        voiceEnabled = !voiceEnabled;
-        document.getElementById('voice-toggle').textContent = voiceEnabled ? "🔊 ON" : "🔇 OFF";
-    }
-
-    // Convertir PCM16 a WAV (Soporte universal)
-    function pcmToWav(pcmData, sampleRate) {
-        const buffer = new ArrayBuffer(44 + pcmData.length * 2);
-        const view = new DataView(buffer);
-        const writeString = (offset, string) => {
-            for (let i = 0; i < string.length; i++) view.setUint8(offset + i, string.charCodeAt(i));
-        };
-        writeString(0, 'RIFF');
-        view.setUint32(4, 32 + pcmData.length * 2, true);
-        writeString(8, 'WAVE');
-        writeString(12, 'fmt ');
-        view.setUint32(16, 16, true);
-        view.setUint16(20, 1, true);
-        view.setUint16(22, 1, true);
-        view.setUint32(24, sampleRate, true);
-        view.setUint32(28, sampleRate * 2, true);
-        view.setUint16(32, 2, true);
-        view.setUint16(34, 16, true);
-        writeString(36, 'data');
-        view.setUint32(40, pcmData.length * 2, true);
-        for (let i = 0; i < pcmData.length; i++) view.setInt16(44 + i * 2, pcmData[i], true);
-        return buffer;
-    }
-
-    async function playTTS(text) {
-        if (!voiceEnabled) return;
+    // ============================================
+    // CARGAR CRÉDITOS DE PUTER AL INICIAR
+    // Obtiene el uso mensual de créditos disponibles
+    // ============================================
+    window.addEventListener('DOMContentLoaded', async () => {
         try {
-            const url = `https://generativelanguage.googleapis.com/v1beta/models/${ttsModel}:generateContent?key=${apiKey}`;
-            const response = await fetch(url, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    contents: [{ parts: [{ text: `Say it in Spanish, very flirtatiously and naturally: ${text}` }] }],
-                    generationConfig: {
-                        responseModalities: ["AUDIO"],
-                        speechConfig: {
-                            voiceConfig: { prebuiltVoiceConfig: { voiceName: "Aoede" } } 
-                        }
-                    }
-                })
-            });
-
-            const result = await response.json();
-            const audioDataB64 = result.candidates[0].content.parts[0].inlineData.data;
-            const audioBuffer = Uint8Array.from(atob(audioDataB64), c => c.charCodeAt(0));
+            const usage = await puter.auth.getMonthlyUsage();
+            const creditsElement = document.getElementById('credits-amount');
             
-            if (!audioContext) audioContext = new (window.AudioContext || window.webkitAudioContext)();
-            const pcmArray = new Int16Array(audioBuffer.buffer);
-            const wavBuffer = pcmToWav(pcmArray, 24000); 
-            
-            const decodedData = await audioContext.decodeAudioData(wavBuffer);
-            const source = audioContext.createBufferSource();
-            source.buffer = decodedData;
-            source.connect(audioContext.destination);
-            source.start(0);
-        } catch (e) {
-            console.error("Error en voz premium:", e);
-        }
-    }
-
-    async function callGemini(userQuery) {
-        const url = `https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent?key=${apiKey}`;
-        const payload = {
-            contents: [{ parts: [{ text: userQuery }] }],
-            systemInstruction: { parts: [{ text: systemPrompt }] }
-        };
-
-        const response = await fetch(url, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(payload)
-        });
-        const result = await response.json();
-        return result.candidates?.[0]?.content?.parts?.[0]?.text;
-    }
-
-    async function handleChat(e) {
-        e.preventDefault();
-        const input = document.getElementById('user-input');
-        const text = input.value.trim();
-        if (!text) return;
-
-        addMessage(text, 'user');
-        input.value = '';
-        document.getElementById('typing').style.display = 'block';
-
-        // Iniciar AudioContext en la primera interacción (Regla de navegadores)
-        if (audioContext && audioContext.state === 'suspended') {
-            audioContext.resume();
-        }
-
-        try {
-            const botResponse = await callGemini(text);
-            if (botResponse) {
-                const cleanText = botResponse.replace(/\*\*/g, '');
-                addMessage(cleanText, 'bot');
-                await playTTS(cleanText);
+            if (usage && usage.monthly_limit) {
+                const usados = usage.monthly_usage || 0;
+                const limite = usage.monthly_limit;
+                const disponibles = limite - usados;
+                creditsElement.textContent = `${disponibles.toLocaleString()} / ${limite.toLocaleString()}`;
+            } else {
+                creditsElement.textContent = "∞ (Ilimitado)";
             }
         } catch (error) {
-            console.error(error);
-        } finally {
-            document.getElementById('typing').style.display = 'none';
+            document.getElementById('credits-amount').textContent = "No disponible";
+            console.error("Error al obtener créditos:", error);
+        }
+    });
+
+    // ============================================
+    // FUNCIÓN: PROBAR VOZ
+    // Reproduce una muestra de audio con la voz seleccionada
+    // ============================================
+    document.getElementById('btn-test').onclick = () => {
+        const vozInput = document.getElementById('voice-select').value;
+        
+        // Separar nombre de voz y tipo de engine (neural o standard)
+        const [voz, engine] = vozInput.includes('-neural') 
+            ? [vozInput.replace('-neural', ''), 'neural'] 
+            : [vozInput, 'standard'];
+        
+        // Determinar el idioma según la voz seleccionada
+        let lang = 'es-US'; // Por defecto
+        if (voz === 'Lucia' || voz === 'Sergio' || voz === 'Conchita' || voz === 'Enrique') {
+            lang = 'es-ES'; // España
+        } else if (voz === 'Mia' || voz === 'Andres') {
+            lang = 'es-MX'; // México
+        }
+        
+        // Reproducir audio de prueba con Puter.js
+        puter.ai.txt2speech("¡Hola! Soy tu nueva amiga. ¿Te gusta cómo suena mi voz?", {
+            voice: voz,
+            engine: engine,
+            language: lang
+        }).then(a => a.play());
+    };
+
+    // ============================================
+    // FUNCIÓN: INICIAR CHAT
+    // Guarda la configuración y muestra la interfaz del chat con mensaje inicial
+    // ============================================
+    document.getElementById('btn-start').onclick = () => {
+        nombreIA = document.getElementById('ai-name').value || "Amigo";
+        personalidadIA = document.getElementById('ai-persona').value || "Un amigo amable";
+        vozSeleccionada = document.getElementById('voice-select').value;
+        modeloSeleccionado = document.getElementById('ai-model').value;
+        
+        // Ocultar configuración y mostrar chat
+        document.getElementById('config-container').style.display = 'none';
+        document.getElementById('chat-container').style.display = 'flex';
+        
+        // ============================================
+        // MOSTRAR MENSAJE INICIAL DEL SISTEMA
+        // Indica al usuario con qué modelo va a hablar
+        // ============================================
+        const modeloNombre = modeloSeleccionado === 'gemini' ? 'Google Gemini 2.5 Flash' : 'OpenAI GPT-4o-mini';
+        const mensajeInicial = document.createElement('div');
+        mensajeInicial.className = 'ia-msg';
+        mensajeInicial.style.background = '#fff3cd';
+        mensajeInicial.style.color = '#856404';
+        mensajeInicial.innerText = `Hola, estás a punto de hablar con un modelo de ${modeloNombre}. Di "hola" para iniciar una conversación.`;
+        contenedor.appendChild(mensajeInicial);
+    };
+
+    // ============================================
+    // REFERENCIAS A ELEMENTOS DEL CHAT
+    // ============================================
+    const contenedor = document.getElementById('messages');
+    const entrada = document.getElementById('user-input');
+
+    // ============================================
+    // FUNCIÓN: ENVIAR MENSAJE
+    // Envía mensaje del usuario a la IA seleccionada y reproduce respuesta con voz
+    // ============================================
+    async function enviar() {
+        const texto = entrada.value.trim();
+        if (!texto) return;
+
+        // MOSTRAR MENSAJE DEL USUARIO
+        const dUser = document.createElement('div');
+        dUser.className = 'user-msg';
+        dUser.innerText = texto;
+        contenedor.appendChild(dUser);
+        entrada.value = "";
+
+        // CREAR ELEMENTO PARA LA RESPUESTA DE LA IA
+        const dIA = document.createElement('div');
+        dIA.className = 'ia-msg';
+        dIA.innerText = "...";
+        contenedor.appendChild(dIA);
+        contenedor.scrollTop = contenedor.scrollHeight;
+
+        // ============================================
+        // ACTIVAR PERSONALIDAD DESPUÉS DEL PRIMER MENSAJE
+        // La IA adopta nombre y personalidad después del "hola" inicial
+        // ============================================
+        if (!conversacionIniciada) {
+            conversacionIniciada = true;
+        }
+
+        try {
+            if (modeloSeleccionado === 'gemini') {
+                // ============================================
+                // LLAMADA A LA API DE GEMINI 2.5 FLASH
+                // Genera respuesta en streaming desde Google AI
+                // ============================================
+                const prompt = conversacionIniciada 
+                    ? `Tu nombre es ${nombreIA}. Tu personalidad es: ${personalidadIA}. Responde de manera natural y coherente a: ${texto}`
+                    : texto;
+
+                const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:streamGenerateContent?alt=sse&key=${GEMINI_API_KEY}`;
+                const res = await fetch(url, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        contents: [{ parts: [{ text: prompt }] }]
+                    })
+                });
+
+                // ============================================
+                // PROCESAR RESPUESTA EN STREAMING (GEMINI)
+                // Lee y muestra el texto generado en tiempo real
+                // ============================================
+                const reader = res.body.getReader();
+                const decoder = new TextDecoder();
+                let finalMsg = "";
+                dIA.innerText = "";
+
+                while (true) {
+                    const { done, value } = await reader.read();
+                    if (done) break;
+                    
+                    const chunk = decoder.decode(value);
+                    const lines = chunk.split('\n');
+                    
+                    for (const l of lines) {
+                        if (l.startsWith('data: ')) {
+                            const json = JSON.parse(l.substring(6));
+                            if (json.candidates) {
+                                const part = json.candidates[0].content.parts[0].text;
+                                finalMsg += part;
+                                dIA.innerText = finalMsg;
+                                contenedor.scrollTop = contenedor.scrollHeight;
+                            }
+                        }
+                    }
+                }
+
+                // ============================================
+                // REPRODUCIR RESPUESTA CON VOZ (GEMINI)
+                // ============================================
+                reproducirVoz(finalMsg);
+
+            } else if (modeloSeleccionado === 'openai') {
+                // ============================================
+                // LLAMADA A LA API DE OPENAI GPT-4O-MINI
+                // Genera respuesta usando OpenAI (CORREGIDO)
+                // ============================================
+                const prompt = conversacionIniciada 
+                    ? `Tu nombre es ${nombreIA}. Tu personalidad es: ${personalidadIA}. Responde de manera natural y coherente a: ${texto}`
+                    : texto;
+
+                const res = await fetch('https://api.openai.com/v1/chat/completions', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${OPENAI_API_KEY}`
+                    },
+                    body: JSON.stringify({
+                        model: 'gpt-4o-mini', // Modelo correcto y más económico
+                        messages: [
+                            { role: 'system', content: `Eres ${nombreIA}. ${personalidadIA}` },
+                            { role: 'user', content: texto }
+                        ],
+                        stream: false, // Sin streaming para evitar errores
+                        max_tokens: 500,
+                        temperature: 0.8
+                    })
+                });
+
+                // ============================================
+                // PROCESAR RESPUESTA (OPENAI - SIN STREAMING)
+                // Lee y muestra el texto generado
+                // ============================================
+                if (!res.ok) {
+                    const errorData = await res.json();
+                    throw new Error(`OpenAI API Error: ${errorData.error?.message || 'Unknown error'}`);
+                }
+
+                const data = await res.json();
+                const finalMsg = data.choices[0].message.content;
+                dIA.innerText = finalMsg;
+                contenedor.scrollTop = contenedor.scrollHeight;
+
+                // ============================================
+                // REPRODUCIR RESPUESTA CON VOZ (OPENAI)
+                // ============================================
+                reproducirVoz(finalMsg);
+            }
+            
+        } catch (e) { 
+            dIA.innerText = "❌ Error: " + e.message;
+            console.error('Error completo:', e);
         }
     }
 
-    function addMessage(text, side) {
-        const msgDiv = document.createElement('div');
-        msgDiv.className = `bubble ${side}`;
-        msgDiv.textContent = text;
-        const container = document.getElementById('messages');
-        container.appendChild(msgDiv);
-        container.scrollTop = container.scrollHeight;
+    // ============================================
+    // FUNCIÓN: REPRODUCIR VOZ
+    // Convierte texto a audio usando Puter.js con la voz configurada
+    // ============================================
+    function reproducirVoz(texto) {
+        const vozInput = vozSeleccionada;
+        const [voz, engine] = vozInput.includes('-neural') 
+            ? [vozInput.replace('-neural', ''), 'neural'] 
+            : [vozInput, 'standard'];
+        
+        // Determinar el idioma según la voz seleccionada
+        let lang = 'es-US';
+        if (voz === 'Lucia' || voz === 'Sergio' || voz === 'Conchita' || voz === 'Enrique') {
+            lang = 'es-ES';
+        } else if (voz === 'Mia' || voz === 'Andres') {
+            lang = 'es-MX';
+        }
+        
+        puter.ai.txt2speech(texto, {
+            voice: voz,
+            engine: engine,
+            language: lang
+        }).then(a => a.play()).catch(err => {
+            console.error('Error reproduciendo voz:', err);
+        });
     }
 
-    document.getElementById('chat-form').onsubmit = handleChat;
+    // ============================================
+    // EVENTOS DE ENVÍO
+    // Permite enviar mensajes con botón o tecla Enter
+    // ============================================
+    document.getElementById('btn-enviar').onclick = enviar;
+    entrada.onkeypress = (e) => { 
+        if(e.key === 'Enter') enviar(); 
+    };
 </script>
+
 </body>
 </html>
+
